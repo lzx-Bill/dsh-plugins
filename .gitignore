@@ -1,0 +1,21 @@
+node_modules/
+.pnpm-store/
+dist/
+lib/
+coverage/
+*.tsbuildinfo
+*.tgz
+*.log
+
+# Local DeepSeek Harness profiles and credentials must never enter Git.
+.dsh-home-local/
+.dsh-home-*/
+.env
+.env.*
+!.env.example
+
+# Local editor and OS files.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

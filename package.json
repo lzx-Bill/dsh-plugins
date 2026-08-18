@@ -1,0 +1,35 @@
+{
+  "name": "dsh-plugins-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Community plugins for DeepSeek Harness",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "pnpm": ">=11.7.0 <12"
+  },
+  "scripts": {
+    "check:packages": "node scripts/check-packages.mjs",
+    "typecheck": "node scripts/run-packages.mjs typecheck",
+    "test": "node scripts/run-packages.mjs test",
+    "test:coverage": "node scripts/run-packages.mjs test --coverage",
+    "build": "node scripts/run-packages.mjs build",
+    "lint": "node scripts/run-packages.mjs lint",
+    "pack:check": "node scripts/pack-workspaces.mjs",
+    "verify": "pnpm run check:packages && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run pack:check",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release:check": "node scripts/check-release-config.mjs",
+    "release:publish": "changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.7",
+    "@types/node": "^22.20.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "tsdown": "^0.22.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

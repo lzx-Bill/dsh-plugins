@@ -1,0 +1,7 @@
+# Bundle layer for @dsh-plugins-placeholder/tool-example.
+# Replace the placeholder package scope before publishing this package.
+- insert:
+    - id: dsh-tool-example
+      name: '@dsh-plugins-placeholder/tool-example'
+      config:
+        prefix: 'Hello'

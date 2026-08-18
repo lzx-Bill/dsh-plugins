@@ -1,0 +1,8 @@
+# Local development overlay. Keep this absolute source path in sync with the
+# shared workspace location; it intentionally loads TypeScript from source.
+- insert:
+    - id: dsh-tool-example-local
+      # Windows ESM imports require a file URL, not an E:/... path.
+      name: 'file:///E:/AI/dsh-plugins/packages/tool-example/src/index.ts'
+      config:
+        prefix: 'Local'
