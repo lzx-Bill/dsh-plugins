@@ -21,4 +21,4 @@ This package is released under the MIT License. The DeepSeek Harness project and
 
 ## Identity-change rule
 
-The repository identity remains `lzx-Bill/dsh-plugins`, while the npm package name is `@supercarlosluo/dsh-tool-example`. The current-name package has been rebuilt, inspected, installed in an isolated local Harness profile, loaded through `--dump-config`, and exercised through `ToolRuntime`; registry installation remains a separate post-publish gate. Current evidence is recorded in [`docs/compatibility.md`](../../docs/compatibility.md).
+The repository identity remains `lzx-Bill/dsh-plugins`, while the npm package name is `@supercarlosluo/dsh-tool-example`. Version `0.1.0` has been rebuilt, inspected, installed from the npm registry into an isolated Harness profile, loaded through `--dump-config`, exercised through `ToolRuntime`, and removed cleanly. Current registry integrity and runtime evidence are recorded in [`docs/compatibility.md`](../../docs/compatibility.md).
