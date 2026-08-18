@@ -1,6 +1,6 @@
-# Bundle layer for @lzx-bill/dsh-tool-example.
+# Bundle layer for @supercarlosluo/dsh-tool-example.
 - insert:
     - id: dsh-tool-example
-      name: '@lzx-bill/dsh-tool-example'
+      name: '@supercarlosluo/dsh-tool-example'
       config:
         prefix: 'Hello'

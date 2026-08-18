@@ -2,7 +2,7 @@
 
 ## Provenance
 
-- Project: `@lzx-bill/dsh-tool-example`.
+- Project: `@supercarlosluo/dsh-tool-example`.
 - Repository: `https://github.com/lzx-Bill/dsh-plugins.git`, package directory `packages/tool-example`.
 - Source: original example authored in this repository; no DeepSeek Harness source files were copied.
 - API reference: `deepseek-ai/deepseek-harness` developer documentation and public package contracts.
@@ -21,4 +21,4 @@ This package is released under the MIT License. The DeepSeek Harness project and
 
 ## Identity-change rule
 
-The package name and repository identity were finalized as `@lzx-bill/dsh-tool-example` and `lzx-Bill/dsh-plugins` after earlier local development under a placeholder identity. Evidence tied to the old placeholder identity must not be reused. The final-name package has been rebuilt, inspected, installed in an isolated local Harness profile, loaded through `--dump-config`, and exercised through `ToolRuntime`; registry installation remains a separate post-publish gate.
+The repository identity remains `lzx-Bill/dsh-plugins`, while the npm package name is `@supercarlosluo/dsh-tool-example`. The current-name package has been rebuilt, inspected, installed in an isolated local Harness profile, loaded through `--dump-config`, and exercised through `ToolRuntime`; registry installation remains a separate post-publish gate. Current evidence is recorded in [`docs/compatibility.md`](../../docs/compatibility.md).

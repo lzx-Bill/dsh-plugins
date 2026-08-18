@@ -4,7 +4,7 @@
 
 ## Gate 0：范围与来源
 
-包位于 `packages/<plugin-name>`；`SOURCE.md`、许可证、README 和 npm `files` 已审核；README 写清 Harness API、配置、权限和副作用；没有凭据、Cookie、token、profile、宿主 checkout 或生成 tarball 入 Git。最终包名、GitHub repository 和 npm scope 必须统一为 `@lzx-bill/*` / `lzx-Bill/dsh-plugins`。
+包位于 `packages/<plugin-name>`；`SOURCE.md`、许可证、README 和 npm `files` 已审核；README 写清 Harness API、配置、权限和副作用；没有凭据、Cookie、token、profile、宿主 checkout 或生成 tarball 入 Git。最终包名、GitHub repository 和 npm scope 必须统一为 `@supercarlosluo/*` / `lzx-Bill/dsh-plugins`。
 
 ## Gate 1：包级质量
 
@@ -34,7 +34,7 @@ npm pack --dry-run
 在 Gate 0–3 全部通过后，由维护者在受控终端手工发布 npm 包。执行前运行：
 
 ```powershell
-$env:NPM_SCOPE = '@lzx-bill'
+$env:NPM_SCOPE = '@supercarlosluo'
 pnpm run release:check
 ```
 
@@ -42,4 +42,4 @@ pnpm run release:check
 
 ## Gate 5：registry clean install 与 GitHub Release
 
-npm 发布成功后，用全新临时 profile 从 registry 安装精确的 `@lzx-bill/dsh-tool-example@<version>`，重复 Gate 3；不得使用 workspace link 或旧缓存。检查 `npm view <package>@<version> dist.integrity`，并保存当前最终包的 registry integrity 与调用证据。全部通过后再创建对应 Git tag/GitHub Release；registry 验收失败时不得创建 Release，并应立即评估弃用该版本。
+npm 发布成功后，用全新临时 profile 从 registry 安装精确的 `@supercarlosluo/dsh-tool-example@<version>`，重复 Gate 3；不得使用 workspace link 或旧缓存。检查 `npm view <package>@<version> dist.integrity`，并保存当前最终包的 registry integrity 与调用证据。全部通过后再创建对应 Git tag/GitHub Release；registry 验收失败时不得创建 Release，并应立即评估弃用该版本。
