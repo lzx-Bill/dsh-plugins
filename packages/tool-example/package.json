@@ -1,5 +1,5 @@
 {
-  "name": "@lzx-bill/dsh-tool-example",
+  "name": "@supercarlosluo/dsh-tool-example",
   "version": "0.1.0",
   "description": "A deterministic, credential-free DeepSeek Harness Host Tool example",
   "author": "lzx-Bill",

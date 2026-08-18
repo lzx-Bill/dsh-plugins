@@ -1,7 +1,7 @@
 import { requirePackages } from './workspace-packages.mjs';
 
 const scope = process.env.NPM_SCOPE?.trim();
-const expectedScope = '@lzx-bill';
+const expectedScope = '@supercarlosluo';
 const expectedRepository = 'https://github.com/lzx-Bill/dsh-plugins.git';
 const expectedAuthor = 'lzx-Bill';
 if (!scope || scope !== expectedScope) {

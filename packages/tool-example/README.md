@@ -1,4 +1,4 @@
-# `@lzx-bill/dsh-tool-example`
+# `@supercarlosluo/dsh-tool-example`
 
 这是一个用于 DeepSeek Harness 的最小 Host Tool Bundle 示例。它注册确定性的 `example_greet` 工具：输入姓名，返回带可配置前缀的问候语。插件只依赖 Harness 的 `tools` 服务，不访问网络、文件系统或外部凭据。
 
@@ -23,7 +23,7 @@ Bundle 默认配置如下：
 ```yaml
 - insert:
     - id: dsh-tool-example
-      name: '@lzx-bill/dsh-tool-example'
+      name: '@supercarlosluo/dsh-tool-example'
       config:
         prefix: 'Hello'
 ```
@@ -35,17 +35,17 @@ Bundle 默认配置如下：
 在仓库根目录安装依赖后：
 
 ```powershell
-pnpm --filter @lzx-bill/dsh-tool-example run typecheck
-pnpm --filter @lzx-bill/dsh-tool-example test
-pnpm --filter @lzx-bill/dsh-tool-example run build
-pnpm --filter @lzx-bill/dsh-tool-example run pack
+pnpm --filter @supercarlosluo/dsh-tool-example run typecheck
+pnpm --filter @supercarlosluo/dsh-tool-example test
+pnpm --filter @supercarlosluo/dsh-tool-example run build
+pnpm --filter @supercarlosluo/dsh-tool-example run pack
 ```
 
 `pack` 使用 `npm pack --dry-run` 检查发布文件清单。发布前必须先生成 tarball，在全新 Harness profile 中安装并通过 `--dump-config` 检查 Bundle/插件行，再真实调用工具；人工发布 npm 包后，从 registry 的精确版本重复同一验收，验收通过后再创建 Git tag/GitHub Release。本仓库不提供自动发布 workflow。
 
 ## 兼容性与状态
 
-代码依据 DeepSeek Harness `0.1.0-rc.7` 的 `defineTool`、Cordis `tools` 注入和 Bundle manifest API 编写；由于 Harness 处于 Developer Preview，发布前应以目标宿主的完整 commit 重新构建并验证。仓库身份和包名现已固定为 `lzx-Bill` / `@lzx-bill`；任何早于这次最终身份变更的占位包验收、tarball 或 registry 记录都不再是当前发布证据，必须重新执行完整 Gate。
+代码依据 DeepSeek Harness `0.1.0-rc.7` 的 `defineTool`、Cordis `tools` 注入和 Bundle manifest API 编写；由于 Harness 处于 Developer Preview，每次发布都应以目标宿主的完整 commit 重新构建并验证。`@supercarlosluo/dsh-tool-example@0.1.0` 已通过最终 tarball 的隔离宿主验收，证据见仓库兼容矩阵；npm registry clean install 仍是发布后的独立 Gate。
 
 ## 许可证与来源
 
