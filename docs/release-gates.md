@@ -1,62 +1,45 @@
 # 发布 Gate
 
-按顺序完成并在 PR/Release 中保留命令和结果。当前 workspace 已有 1 个插件；缺少实际
-package、测试或构建证据时必须阻断发布。
+按顺序完成并在 PR/Release 中保留命令和结果。仓库不提供 GitHub Actions CI 或自动 npm 发布；所有写操作由维护者在本地完成，并且任何 Gate 缺证据都应阻断发布。
 
 ## Gate 0：范围与来源
 
-包位于 `packages/<plugin-name>`；`SOURCE.md`、许可证、NOTICE、README 和 npm `files` 已
-审核；README 写清 Harness commit、配置、权限和副作用；没有凭据、Cookie、token、profile
-或宿主 checkout 文件入 Git。
+包位于 `packages/<plugin-name>`；`SOURCE.md`、许可证、README 和 npm `files` 已审核；README 写清 Harness API、配置、权限和副作用；没有凭据、Cookie、token、profile、宿主 checkout 或生成 tarball 入 Git。最终包名、GitHub repository 和 npm scope 必须统一为 `@lzx-bill/*` / `lzx-Bill/dsh-plugins`。
 
 ## Gate 1：包级质量
 
 ```powershell
-pnpm install
-pnpm run typecheck
-pnpm run test
-pnpm run build
+pnpm install --frozen-lockfile
+pnpm run verify
 ```
 
-根脚本逐包执行；缺包、缺 script、失败命令或 `No test files found` 均阻断发布。
-
-当前实绩：`pnpm verify` PASS，4 个测试通过，其中包含真实 Cordis `ToolRuntime`。
+根脚本逐包执行 `typecheck`、`test`、`build` 和 `pack:check`；缺包、缺 script、失败命令或 `No test files found` 均阻断发布。当前最终身份变更后没有可复用的旧 PASS 宣称，必须重新运行并记录结果。
 
 ## Gate 2：包内容
 
 ```powershell
 pnpm run pack:check
+Set-Location packages/tool-example
+npm pack --dry-run
 ```
 
-审阅每个 `npm pack --dry-run` 清单，确认入口、类型、`cordis.patch.yml`、README、LICENSE
-和必要 NOTICE 存在且没有秘密或超范围文件。固定 tarball 后记录 SHA-256。
-
-当前 tarball `dsh-plugins-placeholder-tool-example-0.1.0.tgz` 的 SHA-256 为
-`D09B3BACB231FD30C6EFC3A365E35EC17EA4A0246DC6334F53CD79EE7A11D018`。
+审阅每个 `npm pack --dry-run` 清单，确认构建入口、类型、`cordis.patch.yml`、README、LICENSE、SOURCE 和必要依赖存在，且没有秘密或超范围文件。最终 tarball 只在本次最终身份验收时生成；不要复用旧占位包名或旧 SHA。
 
 ## Gate 3：本地宿主真实验收
 
-在 `E:\deepseek-harness` 的固定 commit 中构建宿主，用专用 `DSH_HOME` 加载本地构建包，
-通过 `--dump-config` 确认 bundle/插件行，再真实执行工具、事件或 UI 的成功、失败、重复
-和卸载路径，并记录结果。完整命令见 [`local-harness.md`](local-harness.md)。
+在兼容矩阵的固定 commit 中构建宿主，用专用 `DSH_HOME` 加载复制并替换后的源码 overlay，通过 `--dump-config` 确认插件行，再真实执行工具的成功、参数错误和卸载路径。完整命令见 [`local-harness.md`](local-harness.md)。
 
-当前基线为 Harness `0.1.0-rc.7` /
-`99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`，Node `24.11.1`、pnpm `11.7.0`；宿主
-build PASS。全新 profile add、peer 检查和 dump-config PASS；已安装 tgz 的
-`example_greet` 返回 `Installed, Ada!`。Web overlay HTTP 200 后已安全停止；HTTP 200
-仅是入口 smoke，不是业务验收。
+## Gate 4：受控人工 npm 发布
 
-## Gate 4：registry clean install
+在 Gate 0–3 全部通过后，由维护者在受控终端手工发布 npm 包。执行前运行：
 
-发布后用全新临时 profile 从 npm registry 安装精确版本，重复 Gate 3；不得使用 workspace
-link 或旧缓存。检查 `npm view <package>@<version> dist.integrity`，并创建包版本 tag/Release。
+```powershell
+$env:NPM_SCOPE = '@lzx-bill'
+pnpm run release:check
+```
 
-当前 Gate 4 尚未执行，因此不能宣称 registry clean install 通过。
+`release:check` 只校验包名 scope、发布身份和 token 环境；不登录、不上传、不推送。仓库没有自动 release workflow，也没有自动 publish 脚本；若使用 Changesets，先人工审阅版本计划，再在受控终端显式执行 `pnpm exec changeset publish`。否则进入包目录执行明确版本的 `npm publish --access public`。
 
-## Gate 5：受控发布
+## Gate 5：registry clean install 与 GitHub Release
 
-Changeset、版本、兼容矩阵和 release note 已审阅；GitHub repository variable `NPM_SCOPE`
-与包名一致；npm trusted publisher（repository、workflow、branch/environment）已配置；
-release job 仅用 OIDC（`id-token: write`），不设置 `NPM_TOKEN`。任何 Gate 缺证据均为
-`NOT READY`。当前 npm scope、GitHub repository、Trusted Publisher/OIDC 尚未配置，故状态为
-`NOT READY for public publish`。
+npm 发布成功后，用全新临时 profile 从 registry 安装精确的 `@lzx-bill/dsh-tool-example@<version>`，重复 Gate 3；不得使用 workspace link 或旧缓存。检查 `npm view <package>@<version> dist.integrity`，并保存当前最终包的 registry integrity 与调用证据。全部通过后再创建对应 Git tag/GitHub Release；registry 验收失败时不得创建 Release，并应立即评估弃用该版本。

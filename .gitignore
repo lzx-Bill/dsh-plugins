@@ -6,6 +6,8 @@ coverage/
 *.tsbuildinfo
 *.tgz
 *.log
+npm-debug.log*
+.npmrc
 
 # Local DeepSeek Harness profiles and credentials must never enter Git.
 .dsh-home-local/

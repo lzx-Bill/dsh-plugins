@@ -1,61 +1,52 @@
-# `@dsh-plugins-placeholder/tool-example`
+# `@lzx-bill/dsh-tool-example`
 
-当前仓库唯一的 DeepSeek Harness Host Tool 插件。它注册确定性的 `example_greet` 工具：
-输入姓名，返回带可配置前缀的问候语。插件不访问网络、文件系统或任何外部凭据。
-
-## 发布前必须修改包名
-
-`@dsh-plugins-placeholder` 只是避免在公开发布前误占用 npm scope 的占位符。发布到 npm
-前，请将 `package.json`、`cordis.patch.yml`、README、GitHub 仓库信息和所有安装示例中的
-scope 一并替换成你实际拥有的公开 scope，并确认包名可用。
+这是一个用于 DeepSeek Harness 的最小 Host Tool Bundle 示例。它注册确定性的 `example_greet` 工具：输入姓名，返回带可配置前缀的问候语。插件只依赖 Harness 的 `tools` 服务，不访问网络、文件系统或外部凭据。
 
 ## 本地开发
 
-本仓库的 [local-profile overlay](../../examples/local-profile/cordis.patch.yml) 使用
-`file:///E:/AI/dsh-plugins/packages/tool-example/src/index.ts` 绝对源码 URL（Windows ESM
-不能使用裸 `E:/...` 模块名），不需要先发布或安装该包。确保 `E:\deepseek-harness` 已安装
-依赖并完成构建后，在 Harness 仓库执行：
+本仓库的 [`examples/local-profile/cordis.patch.yml`](../../examples/local-profile/cordis.patch.yml) 是可复制的开发模板，其中的源码 URL 使用 `ABSOLUTE_PATH_TO_DSH_PLUGINS` 标记，不包含维护者机器路径。请按 [`examples/local-profile/README.md`](../../examples/local-profile/README.md) 复制模板到临时文件并替换标记，再启动本地 Harness。
 
 ```powershell
-Set-Location E:\deepseek-harness
-pnpm dsh web --patch E:/AI/dsh-plugins/examples/local-profile/cordis.patch.yml
+$env:DSH_PLUGINS_ROOT = (Resolve-Path '<path-to-dsh-plugins>').Path
+$env:DSH_HARNESS_ROOT = (Resolve-Path '<path-to-deepseek-harness>').Path
+# 复制并替换 overlay 后：
+Set-Location $env:DSH_HARNESS_ROOT
+pnpm dsh web --patch '<path-to-private-overlay>/tool-example.patch.yml'
 ```
 
-本地 overlay 配置前缀为 `Local`。本次 Web smoke 返回 HTTP 200 后安全停止；HTTP 200 只
-证明入口可达，不是业务验收。业务验收使用全新 profile 从已安装 tgz 执行 `example_greet`
-问候 `Ada`，实际返回 `Installed, Ada!`。
+overlay 的 `prefix` 配置为 `Local`。启动后在 Harness Web/Headless 流程中请求 `example_greet` 问候 `Ada`，应得到 `Local, Ada!`。这一步是本地真实行为验收的一部分；仅构建成功、进程启动或 HTTP 200 不足以证明工具行为正确。
 
-## 包结构与命令
+## 配置与副作用
 
-```text
-src/index.ts          # ESM 插件，导出 name / inject / apply / Config
-tests/tool-example.spec.ts
-cordis.patch.yml      # npm 包可安装 Bundle 的 patch 层（本地开发请用 local-profile）
+Bundle 默认配置如下：
+
+```yaml
+- insert:
+    - id: dsh-tool-example
+      name: '@lzx-bill/dsh-tool-example'
+      config:
+        prefix: 'Hello'
 ```
 
-在包目录（安装依赖后）运行：
+`prefix` 必须包含至少一个非空白字符。工具参数 `name` 必填，返回值始终是 `${prefix}, ${name}!` 的字符串。插件没有网络、文件、子进程、凭据、定时器或持久化副作用；工具执行只在当前 Harness 进程内计算字符串。
+
+## 包级命令
+
+在仓库根目录安装依赖后：
 
 ```powershell
-npm run typecheck
-npm test
-npm run build
-npm run pack
+pnpm --filter @lzx-bill/dsh-tool-example run typecheck
+pnpm --filter @lzx-bill/dsh-tool-example test
+pnpm --filter @lzx-bill/dsh-tool-example run build
+pnpm --filter @lzx-bill/dsh-tool-example run pack
 ```
 
-`npm run pack` 使用 `npm pack --dry-run` 检查最终文件清单；真正发布前应先用 `npm pack`
-生成 tarball，在全新 Harness profile 中从 tarball 安装并验证 `--dump-config` 与真实工具
-调用，再执行 `npm publish --access public`。
+`pack` 使用 `npm pack --dry-run` 检查发布文件清单。发布前必须先生成 tarball，在全新 Harness profile 中安装并通过 `--dump-config` 检查 Bundle/插件行，再真实调用工具；人工发布 npm 包后，从 registry 的精确版本重复同一验收，验收通过后再创建 Git tag/GitHub Release。本仓库不提供自动发布 workflow。
 
-兼容性基线是 Harness `0.1.0-rc.7`、完整 commit
-`99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`、Node `24.11.1`、pnpm `11.7.0`，以及
-`@deepseek-ai/dsh-tools` `0.1.0-rc.7`。本包 `pnpm verify` 4 tests PASS（含真实
-Cordis `ToolRuntime`），宿主 `pnpm run build` PASS；固定 tgz SHA-256 为
-`D09B3BACB231FD30C6EFC3A365E35EC17EA4A0246DC6334F53CD79EE7A11D018`。
+## 兼容性与状态
 
-当前仍 `NOT READY for public publish`：npm scope、GitHub repository、Trusted Publisher/OIDC
-尚未配置，且 registry clean install 尚未完成。Harness 是 Developer Preview，发布前必须
-完成 Gate 4 并重新确认目标版本与 peer 范围。
+代码依据 DeepSeek Harness `0.1.0-rc.7` 的 `defineTool`、Cordis `tools` 注入和 Bundle manifest API 编写；由于 Harness 处于 Developer Preview，发布前应以目标宿主的完整 commit 重新构建并验证。仓库身份和包名现已固定为 `lzx-Bill` / `@lzx-bill`；任何早于这次最终身份变更的占位包验收、tarball 或 registry 记录都不再是当前发布证据，必须重新执行完整 Gate。
 
 ## 许可证与来源
 
-代码使用 MIT 许可证，来源与兼容性记录见 [`SOURCE.md`](SOURCE.md)。
+代码使用 MIT 许可证，来源与兼容性假设见 [`SOURCE.md`](SOURCE.md)。

@@ -1,48 +1,49 @@
-# E:\deepseek-harness 本地联调
+# 本地 Harness 联调
 
-本仓库只维护插件；Harness 保持在独立 checkout `E:\deepseek-harness`。每次联调都记录
-宿主 commit、Node/pnpm 版本和 profile，避免把宿主改动误归因于插件。
+本仓库只维护插件；DeepSeek Harness 保持在独立 checkout。每次联调都记录宿主 tag/commit、Node/pnpm 版本和专用 `DSH_HOME`，不要把宿主文件复制进本仓库。
+
+## 设置路径变量
+
+公开文档不假设任何本机盘符。请在 PowerShell 中设置：
+
+```powershell
+$env:DSH_PLUGINS_ROOT = (Resolve-Path '<path-to-dsh-plugins>').Path
+$env:DSH_HARNESS_ROOT = (Resolve-Path '<path-to-deepseek-harness>').Path
+$env:DSH_HOME = Join-Path $env:DSH_PLUGINS_ROOT '.dsh-home-local'
+```
 
 ## 固定宿主基线
 
 ```powershell
-Set-Location E:\deepseek-harness
+Set-Location $env:DSH_HARNESS_ROOT
 git status --short --branch
 git log -1 --format='%H%n%ad%n%s' --date=iso
-node --version                 # 24.11.1
-pnpm --version                 # 11.7.0
+node --version
+pnpm --version
 pnpm install --frozen-lockfile
 pnpm run build
 ```
 
-本次已验收基线为 Harness `0.1.0-rc.7`、完整 commit
-`99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`；宿主 `pnpm run build` 已 PASS。
-
-若需同步 upstream，先阅读宿主贡献说明并保留本地未提交文件；本仓库不对宿主执行 reset、
-merge 或发布。
+兼容矩阵中的 commit 只是待验证基线。同步宿主前先阅读宿主贡献说明并保留其本地未提交文件；本仓库不对宿主执行 reset、merge 或发布。
 
 ## 开发 overlay
 
-```powershell
-Set-Location E:\AI\dsh-plugins
-pnpm install
-pnpm --filter <plugin-package-name> run build
+模板 [`examples/local-profile/cordis.patch.yml`](../examples/local-profile/cordis.patch.yml) 使用 `file:///ABSOLUTE_PATH_TO_DSH_PLUGINS/...` 标记。先复制模板到临时目录，再按 [`examples/local-profile/README.md`](../examples/local-profile/README.md) 替换为本机插件仓库路径；不要直接修改并提交模板。
 
-Set-Location E:\deepseek-harness
-$env:DSH_HOME = 'E:\AI\dsh-plugins\.dsh-home-local'
-pnpm dsh web --patch E:/AI/dsh-plugins/examples/local-profile/cordis.patch.yml
+```powershell
+$privateOverlay = Join-Path $env:TEMP 'dsh-tool-example.patch.yml'
+$template = Join-Path $env:DSH_PLUGINS_ROOT 'examples/local-profile/cordis.patch.yml'
+$source = Get-Content $template -Raw
+$repoUrlPath = $env:DSH_PLUGINS_ROOT -replace '\\', '/'
+$source.Replace('ABSOLUTE_PATH_TO_DSH_PLUGINS', $repoUrlPath) |
+  Set-Content $privateOverlay -Encoding utf8
+
+Set-Location $env:DSH_HARNESS_ROOT
+pnpm dsh web --patch $privateOverlay
 ```
 
-当前 local overlay 的插件模块名必须是
-`file:///E:/AI/dsh-plugins/packages/tool-example/src/index.ts`；该模块名位于
-`examples/local-profile/cordis.patch.yml`。发布 Bundle 的
-`packages/tool-example/cordis.patch.yml` 仅用于 npm 包安装，不用于本地 overlay。实际
-patch 结构与 profile 参数以固定 Harness commit 的文档为准。用 `--dump-config` 检查有效
-配置层，不要假设 patch 会深度合并整行配置。
+Windows ESM 模块名使用 `file:///...` URL；发布 Bundle 的 `packages/tool-example/cordis.patch.yml` 使用 npm 包名，只适用于安装后的 profile，不用于源码 overlay。
 
 ## 真实行为证据
 
-本次已验证：全新 profile 的 package add、peer 检查和 `--dump-config` PASS；从已安装 tgz
-执行 `example_greet` 返回 `Installed, Ada!`；Web overlay 返回 HTTP 200 后安全停止。
-HTTP 200、进程启动和静态 patch 检查只是前置证据，不能替代业务调用。workspace
-`pnpm verify` 4 tests PASS（含真实 Cordis `ToolRuntime`）。完成后清理专用 `DSH_HOME`。
+先用 `--dump-config` 确认有效配置层，再在真实 Web/Headless 流程中调用 `example_greet`，检查成功、参数错误和插件卸载后的注册清理。HTTP 200、进程启动、静态 patch 检查和历史验收结果都不能替代当前最终身份对应的业务调用证据。完成后删除临时 `DSH_HOME`、临时 overlay 和生成 tarball。

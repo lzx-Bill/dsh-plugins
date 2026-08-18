@@ -1,9 +1,25 @@
 {
-  "name": "dsh-plugins-workspace",
+  "name": "dsh-plugins",
   "version": "0.1.0",
   "private": true,
   "description": "Community plugins for DeepSeek Harness",
+  "author": "lzx-Bill",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lzx-Bill/dsh-plugins.git"
+  },
+  "homepage": "https://github.com/lzx-Bill/dsh-plugins#readme",
+  "bugs": {
+    "url": "https://github.com/lzx-Bill/dsh-plugins/issues"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "npm"
+  ],
   "type": "module",
   "packageManager": "pnpm@11.7.0",
   "engines": {
@@ -16,13 +32,11 @@
     "test": "node scripts/run-packages.mjs test",
     "test:coverage": "node scripts/run-packages.mjs test --coverage",
     "build": "node scripts/run-packages.mjs build",
-    "lint": "node scripts/run-packages.mjs lint",
     "pack:check": "node scripts/pack-workspaces.mjs",
     "verify": "pnpm run check:packages && pnpm run typecheck && pnpm run test && pnpm run build && pnpm run pack:check",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release:check": "node scripts/check-release-config.mjs",
-    "release:publish": "changeset publish"
+    "release:check": "node scripts/check-release-config.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",

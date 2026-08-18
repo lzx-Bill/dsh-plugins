@@ -3,7 +3,7 @@
  *
  * The package intentionally keeps the first example small: it consumes only
  * the Harness tool registry, accepts one string, and returns one string.
- * @module @dsh-plugins-placeholder/tool-example
+ * @module @lzx-bill/dsh-tool-example
  */
 
 import type { Context } from '@deepseek-ai/cordis'

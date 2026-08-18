@@ -1,7 +1,8 @@
 {
-  "name": "@dsh-plugins-placeholder/tool-example",
+  "name": "@lzx-bill/dsh-tool-example",
   "version": "0.1.0",
   "description": "A deterministic, credential-free DeepSeek Harness Host Tool example",
+  "author": "lzx-Bill",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/types/index.d.ts",
@@ -27,9 +28,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/REPLACE-BEFORE-PUBLISHING/dsh-plugins.git",
+    "url": "https://github.com/lzx-Bill/dsh-plugins.git",
     "directory": "packages/tool-example"
   },
+  "homepage": "https://github.com/lzx-Bill/dsh-plugins#readme",
+  "bugs": {
+    "url": "https://github.com/lzx-Bill/dsh-plugins/issues"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "tool"
+  ],
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
@@ -52,14 +64,6 @@
   "peerDependencies": {
     "@deepseek-ai/cordis": ">=4.0.1 <5",
     "@deepseek-ai/dsh-tools": ">=0.1.0-rc.7 <0.2.0"
-  },
-  "peerDependenciesMeta": {
-    "@deepseek-ai/cordis": {
-      "optional": true
-    },
-    "@deepseek-ai/dsh-tools": {
-      "optional": true
-    }
   },
   "devDependencies": {
     "@deepseek-ai/cordis": "4.0.1",
