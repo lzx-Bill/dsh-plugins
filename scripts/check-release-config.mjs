@@ -2,7 +2,7 @@ import { requirePackages } from './workspace-packages.mjs';
 
 const scope = process.env.NPM_SCOPE?.trim();
 const expectedScope = '@supercarlosluo';
-const expectedRepository = 'https://github.com/lzx-Bill/dsh-plugins.git';
+const expectedRepository = 'git+https://github.com/lzx-Bill/dsh-plugins.git';
 const expectedAuthor = 'lzx-Bill';
 if (!scope || scope !== expectedScope) {
   console.error(`[release:check] 请将 NPM_SCOPE 设置为 ${expectedScope}，以匹配最终包名。`);

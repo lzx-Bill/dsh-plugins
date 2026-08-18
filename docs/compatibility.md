@@ -4,11 +4,11 @@ DeepSeek Harness 处于 Developer Preview，插件必须绑定实际构建和运
 
 | 插件包 | 插件版本 | Harness tag/commit | Node | pnpm | 状态 |
 | --- | --- | --- | --- | --- | --- |
-| `@supercarlosluo/dsh-tool-example` | `0.1.0` | `0.1.0-rc.7` / `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca` | `24.11.1` | `11.7.0` | 本地 tarball PASS；registry NOT VERIFIED |
+| `@supercarlosluo/dsh-tool-example` | `0.1.0` | `0.1.0-rc.7` / `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca` | `24.11.1` | `11.7.0` | npm registry clean install PASS |
 
 ## 当前证据状态
 
-当前 tarball `@supercarlosluo/dsh-tool-example@0.1.0` 的 SHA-256 为 `64170B799E163A966BBD52FEE425F335203E33C321422237A15ABACEF10C751C`，包含 7 个预期文件。它已在隔离 Harness profile 中完成安装、peer 检查、`--dump-config` 和真实 `Context + ToolRuntime` 调用，返回 `FinalTarball, Ada!`。该结果只证明本地 tarball 与固定宿主兼容；npm registry clean install 尚未执行。
+`@supercarlosluo/dsh-tool-example@0.1.0` 已从 npm registry 精确安装到全新隔离 profile；registry SHA-1 为 `af24925c99e9b1a05e0b34304eba3d5b22df7f30`，integrity 为 `sha512-vmoeL7Ox1Okc0ja3odTJkZYOW7c3v/sstARpWw0RpgKtzumlarstNZAyWX3uTMdH6zXbM4NX14ETu1i6bSBzUA==`，与 profile lockfile 一致。`--dump-config` 显示正确 bundle；真实 `Context + ToolRuntime` 成功调用返回 `Registry, Ada!`，缺少 `name` 返回参数错误；卸载后配置中不再出现插件。
 
 发布与后续版本重新验收至少需要：
 

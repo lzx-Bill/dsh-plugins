@@ -43,7 +43,7 @@ $env:DSH_HARNESS_ROOT = (Resolve-Path '<path-to-deepseek-harness>').Path
 
 ## 当前验证状态
 
-`@supercarlosluo/dsh-tool-example@0.1.0` 已通过 `pnpm run verify`，最终 tarball SHA-256 为 `64170B799E163A966BBD52FEE425F335203E33C321422237A15ABACEF10C751C`。该 tarball 已在 Harness `0.1.0-rc.7`（commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`）隔离 profile 中完成安装、peer 检查、`--dump-config` 和真实 `ToolRuntime` 调用。npm registry clean install 尚未验证，不能据此宣称 registry 版本可用。
+[`@supercarlosluo/dsh-tool-example@0.1.0`](https://www.npmjs.com/package/@supercarlosluo/dsh-tool-example/v/0.1.0) 已发布并通过 `pnpm run verify`、本地 tarball 和 npm registry clean install 验收。registry integrity 为 `sha512-vmoeL7Ox1Okc0ja3odTJkZYOW7c3v/sstARpWw0RpgKtzumlarstNZAyWX3uTMdH6zXbM4NX14ETu1i6bSBzUA==`。它已在 Harness `0.1.0-rc.7`（commit `99f6f02fecdb7dff40c3fbc9470f5907c29f74ca`）隔离 profile 中完成安装、peer 检查、`--dump-config`、成功与缺参调用以及卸载清理。
 
 ## 发布路线
 

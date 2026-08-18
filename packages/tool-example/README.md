@@ -45,7 +45,7 @@ pnpm --filter @supercarlosluo/dsh-tool-example run pack
 
 ## 兼容性与状态
 
-代码依据 DeepSeek Harness `0.1.0-rc.7` 的 `defineTool`、Cordis `tools` 注入和 Bundle manifest API 编写；由于 Harness 处于 Developer Preview，每次发布都应以目标宿主的完整 commit 重新构建并验证。`@supercarlosluo/dsh-tool-example@0.1.0` 已通过最终 tarball 的隔离宿主验收，证据见仓库兼容矩阵；npm registry clean install 仍是发布后的独立 Gate。
+代码依据 DeepSeek Harness `0.1.0-rc.7` 的 `defineTool`、Cordis `tools` 注入和 Bundle manifest API 编写；由于 Harness 处于 Developer Preview，每次发布都应以目标宿主的完整 commit 重新构建并验证。`@supercarlosluo/dsh-tool-example@0.1.0` 已通过本地 tarball与 npm registry clean install 的隔离宿主验收，证据见仓库兼容矩阵。
 
 ## 许可证与来源
 
